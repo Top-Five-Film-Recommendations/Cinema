@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+{% load static %}
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" type="image/png" href="{% static '../static/img/logo_white.png' %}">
+
+    <link rel="stylesheet" href="{% static '../static/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static '../static/style.css' %}">
+    <link rel="stylesheet" href="{% static '../static/css/animate.min.css' %}">
+    <link rel="stylesheet" href="{% static '../static/css/font-awesome.min.css' %}">
+    <link href='https://fonts.googleapis.com/css?family="Josefin+Sans"&amp;subset=latin,latin-ext' rel='stylesheet'
+          type='text/css'>
+
+    <script src="{% static '../static/js/jquery-2.1.0.min.js' %}"></script>
+    <script src="{% static '../static/js/bootstrap.min.js' %}"></script>
+    <script src="{% static '../static/js/blocs.min.js' %}"></script>
+    <script src="{% static '../static/js/jquery.touchSwipe.min.js' %}" defer></script>
+    <script src="{% static '../static/js/lazysizes.min.js' %}" defer></script>
+    <title>Welcome to Our Cinema</title>
+
+    <!-- Google Analytics -->
+
+    <!-- Google Analytics END -->
+
+</head>
+<body>
+<!-- Main container -->
+<div class="page-container">
+
+    <!-- bloc-0 -->
+    <div class="bloc bloc-fill-screen bgc-black bg-tracks d-bloc " id="bloc-0">
+        <div class="container fill-bloc-top-edge sticky-nav">
+            <nav class="navbar row">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="{% url 'movie_display' %}"><img src="{% static '../static/img/logo_white.png' %}"
+                                                                          alt="logo" class="lazyload"/><span
+                            style=:"bold">Cinema</span></a>
+                    <button id="nav-toggle" type="button" class="ui-navbar-toggle navbar-toggle menu-icon-rounded-bars"
+                            data-toggle="collapse" data-target=".navbar-1">
+                        <span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span
+                            class="icon-bar"></span><span class="icon-bar"></span>
+                    </button>
+                </div>
+
+                                {% if request.user.is_authenticated %}
+
+                    <div class="navbar-header">
+                    <ul  class="nav navbar-nav">
+                        <li><a href="#" class="login"  >欢迎您！{{ request.user.username}}</a></li>
+                        <li><a href="{% url 'logout' %}" class="login"  >退出</a></li>
+                        {% if request.user.username == 'admin' %}
+                            <li><a href="{% url 'reCal_coldstart' %}" class="login">spark重计算</a></li>
+                            <li><a href="{% url 'reCal_coldstart' %}" class="login">无用户推荐计算</a></li>
+                        {% endif %}
+                        </ul>
+                    </div>
+                {% else %}
+                <div class="navbar-header">
+                    <ul  class="nav navbar-nav">
+                        <li><a href="{% url 'login' %}" class = "login">登录</a></li>
+                        <li><a href="{% url 'register' %}" class = "login">注册</a></li>
+                    </ul>
+                </div>
+
+
+                {% endif %}
+
+                <div class="collapse navbar-collapse navbar-1 special-dropdown-nav">
+                    <form action="{% url 'movie_search' %}" method="post" class="navbar-form pull-right"
+                          role="search">
+                        {% csrf_token %}
+                        <input type="text" name="q" class="form-control" placeholder="Search">
+                        <button type="submit" name="submit" class="btn btn-info">搜索</button>
+                    </form>
+                </div>
+            </nav>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12">
+                    <h1 class="text-center mountain-hero-text fadeInUp animated">
+                        Welcome to Our Cinema!
+                    </h1>
+                    <h3 class="text-center mg-lg mountain-hero-text-sub fadeInUp animDelay06, .animDelay04-hvr animated">
+                        Just Help Yourself Here.
+                    </h3>
+                    <div class="text-center">
+                        <a href="{% url 'movie_display' %}" onclick="scrollToTarget('')"
+                           class="btn fadeIn animDelay1 btn-wire btn-xl animated">Get Started</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- bloc-0 END -->
+
+    <!-- Footer - bloc-2 -->
+    <!--<div class="" id="bloc-2" style="background-color: #000;margin-top: 0px;">-->
+        <!--<div class="container">-->
+            <!--<div class="row">-->
+                <!--<div class="col-sm-12 text-center footer">-->
+                    <!--<p>-->
+                        <!--<span>CopyRight © Tws-Beijing 2018, All Rights Reserved.</span>-->
+                        <!--<span>-->
+    <!--<a target="_blank" href="http://tws-beijing.ga/">-->
+    <!--&nbsp;&nbsp;&nbsp;&nbsp;<span class="label label-primary">关于我们</span>-->
+    <!--</a>-->
+    <!--</span>-->
+                    <!--</p>-->
+                <!--</div>-->
+            <!--</div>-->
+        <!--</div>-->
+    <!--</div>-->
+    <!-- Footer - bloc-2 END -->
+
+</div>
+<!-- Main container END -->
+
+
+</body>
+</html>

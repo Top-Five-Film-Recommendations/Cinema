@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+{% load static %}
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" type="image/png" href="{% static '../static/img/logo_white.png' %}">
+
+    <link rel="stylesheet" href="{% static '../static/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static '../static/style.css' %}">
+    <link rel="stylesheet" href="{% static '../static/css/animate.min.css' %}">
+    <link rel="stylesheet" href="{% static '../static/css/font-awesome.min.css' %}">
+    <link href='https://fonts.googleapis.com/css?family="Josefin+Sans"&amp;subset=latin,latin-ext' rel='stylesheet'
+          type='text/css'>
+
+    <script src="{% static '../static/js/jquery-2.1.0.min.js' %}"></script>
+    <script src="{% static '../static/js/bootstrap.min.js' %}"></script>
+    <script src="{% static '../static/js/blocs.min.js' %}"></script>
+    <script src="{% static '../static/js/jquery.touchSwipe.min.js' %}" defer></script>
+    <script src="{% static '../static/js/lazysizes.min.js' %}" defer></script>
+    <title>Cinema</title>
+
+
+    <!-- Google Analytics -->
+
+    <!-- Google Analytics END -->
+
+</head>
+<body>
+<!-- Main container -->
+<div class="page-container">
+
+    <!-- bloc-0 -->
+    <div class="bloc bgc-black d-bloc " id="bloc-0">
+        <div class="container fill-bloc-top-edge">
+            <nav class="navbar row">
+
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="{% url 'movie_display' %}"><img
+                            src="{% static '../static/img/logo_white.png' %}"
+                            alt="logo" class="lazyload"/><span
+                            style=:"bold">Cinema</span></a>
+                    <button id="nav-toggle" type="button" class="ui-navbar-toggle navbar-toggle menu-icon-rounded-bars"
+                            data-toggle="collapse" data-target=".navbar-1">
+                        <span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span
+                            class="icon-bar"></span><span class="icon-bar"></span>
+                    </button>
+                </div>
+
+                {% if request.user.is_authenticated %}
+
+                    <div class="navbar-header">
+                    <ul  class="nav navbar-nav">
+                        <li><a href="#" class="login"  >欢迎您！{{ request.user.username}}</a></li>
+                        <li><a href="{% url 'logout' %}" class="login"  >退出</a></li>
+                        {% if request.user.username == 'admin' %}
+                            <li><a href="{% url 'reCal_coldstart' %}" class="login">spark重计算</a></li>
+                            <li><a href="{% url 'reCal_coldstart' %}" class="login">无用户推荐计算</a></li>
+                        {% endif %}
+                        </ul>
+                    </div>
+                {% else %}
+                <div class="navbar-header">
+                    <ul  class="nav navbar-nav">
+                        <li><a href="{% url 'login' %}" class = "login">登录</a></li>
+                        <li><a href="{% url 'register' %}" class = "login">注册</a></li>
+                    </ul>
+                </div>
+
+
+                {% endif %}
+                <div class="collapse navbar-collapse navbar-1 special-dropdown-nav">
+                    <!--未修改-->
+                    <form action="{% url 'movie_search' %}" method="post" class="navbar-form pull-right"
+                          role="search">
+                        {% csrf_token %}
+                        <input type="text" name="q" class="form-control" placeholder="Search">
+                        <button type="submit" name="submit" class="btn btn-info">搜索</button>
+                    </form>
+                </div>
+
+            </nav>
+        </div>
+    </div>
+    <!-- bloc-0 END -->
+
+    <!-- bloc-1 -->
+    <div class="bloc bgc-splashed-white l-bloc" id="bloc-1">
+        <div class="container bloc-lg">
+            <div class="row voffset">
+                <!--left-->
+                <div class="col-md-12 login-form">
+                  <form action="{% url 'register' %}" method="post">
+                    <div class="form-group"> <label>用户名</label> <input type="text" name="username" class="form-control" placeholder="USERNAME" required=""></div>
+                      <div class="form-group"><label>邮箱</label><input type="email" name="email" class="form-control" placeholder="Enter email" required=""></div>
+
+                    <div class="form-group"> <label>密码</label> <input type="password" name="password" class="form-control" placeholder="Password" required=""></div>
+                      <div class="form-group"><label>确认密码</label><input type="password" name="confirm password" class="form-control" placeholder="Password" required="" onblur="compare()" id="confirm_password"></div>
+
+                    <button type="submit" class="btn btn-primary">注册</button>
+                      {% csrf_token %}
+                  </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!-- bloc-1 END -->
+
+    <!-- ScrollToTop Button -->
+    <a class="bloc-button btn btn-d scrollToTop" onclick="scrollToTarget('1')"><span
+            class="fa fa-chevron-up"></span></a>
+    <!-- ScrollToTop Button END-->
+
+
+</div>
+<!-- Main container END -->
+
+
+</body>
+</html>
