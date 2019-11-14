@@ -1,4 +1,5 @@
 venv/
+data/
 .DS_Store
 
 # ImGui setting
