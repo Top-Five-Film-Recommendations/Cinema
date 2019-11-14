@@ -1,5 +1,7 @@
 
 import datetime
+import thrift
+import happybase
 
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
@@ -90,11 +92,27 @@ class Review(models.Model):
         MaxValueValidator(5),
         MinValueValidator(0)
     ]
+    # int
     user = models.ForeignKey(UserProfile, verbose_name='用户', on_delete=models.CASCADE)
+    # int
     movie = models.ForeignKey(MovieInfo, verbose_name='电影', on_delete=models.CASCADE)
+    # str
     content = models.TextField(max_length=255, default='', verbose_name='评论', null=True, blank=True)
+    # float
     star = models.FloatField(default=0, validators=STAR_RANGE, verbose_name='星级')
+    # datetime.datetime
     reviewtime = models.DateTimeField(default=datetime.datetime.now, verbose_name='提交时间')
+
+    # connection = happybase.Connection(host='39.100.88.119', port=9090)
+    # connection.open()
+    # # tableList = connection.tables()
+    # # commentTable = happybase.Table('comment', connection)
+    # # row = commentTable.row('10344754_https://www.douban.com/people/119429128/')
+    # # region = commentTable.regions()
+    # query_str = "RowFilter (=, 'regexstring:26752088*')"
+    # query = commentTable.scan(filter=query_str, limit=1000)
+    # result = list(query)
+    # connection.close()
 
     def __str__(self):
         return '%s - %s - %lf' % (self.user.username, self.movie.moviename, self.star)
