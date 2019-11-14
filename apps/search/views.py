@@ -16,7 +16,7 @@ class MovieSearch(View):
         for movieid in movie_id:
             movie = MovieInfo.objects.get(id=int(movieid))
             movie_list.append(movie)
-            #此部分功能建议上线后再调试，因为主键不能修改
+            #此部分功能建议上线后再调试
         paginator = Paginator(movie_list, 8)
         page = request.GET.get('page')
         search_movie = paginator.get_page(page)

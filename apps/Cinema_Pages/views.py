@@ -13,7 +13,7 @@ from movie.models import Review, MovieInfo,MovieSimilar
 from Cinema_Pages.models import DefaultRecom, StaRecom
 from user.models import UserProfile
 from django.db.models import Q
-
+from elasticsearch import Elasticsearch
 
 # old
 # from .func import fuzzy_finder
@@ -197,7 +197,7 @@ class Cinema_Pages_view(View):
         user_recommend_movie = recommendForUser(request=request)
         movie_list = []
         for movie in user_recommend_movie:
-            movie_list.append(movie)
+            movie_list.append(movie.movie)
         paginator = Paginator(movie_list, 8)
         page = request.GET.get('page')
         movies = paginator.get_page(page)
@@ -211,4 +211,48 @@ def reCal_spark(request):
     pass
 
 def movie_type(request, type):
-    pass
+    movie_name, movie_id = searchByType(type)
+    movie_list = []
+    for movieid in movie_id:
+        movie = MovieInfo.objects.get(id=int(movieid))
+        movie_list.append(movie)
+        # 此部分功能建议上线后再调试，因为主键不能修改
+    paginator = Paginator(movie_list, 8)
+    page = request.GET.get('page')
+    commend_movie = paginator.get_page(page)
+
+    return render(request, 'movie_display.html', {
+        "commend_movie": commend_movie
+    })
+
+def searchByType(request):
+    es = Elasticsearch({"39.98.134.232:9200"})
+    ret = es.search(index="movieinfo"
+                    , body={
+            "_source": ["name"],
+            "query": {
+                "term": {
+                    "type": request
+                }
+            },
+            "sort": [
+                {
+                    "score": {
+                        "order": "desc"
+                    }
+                }
+            ],
+            "size": 1000
+        })
+    resultback = ret["hits"]["hits"]
+    names = []
+    ids = []
+    # print(len(resultback))
+    for hit in resultback:
+        names.append(hit['_source']['name'])
+        ids.append(hit["_id"])
+    print(names)
+    print(ids)
+    print(len(names))
+    return names, ids
+

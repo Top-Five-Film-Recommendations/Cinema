@@ -134,22 +134,22 @@
                         {% if commend_movie %}
                         {% for movie in commend_movie %}
                         <div class="col-sm-3 col-xs-4 text-center">
-                            <a href="{% url 'movieinfo' movie.movie.id%}" data-gallery-id="gallery-1">
-                                <img src="{% if 34  %}{{movie.movie.picture}}{% endif %}" alt="图片无法显示"
+                            <a href="{% url 'movieinfo' movie.id%}" data-gallery-id="gallery-1">
+                                <img src="{% if 34  %}{{movie.picture}}{% endif %}" alt="图片无法显示"
                                      class="img-responsive lazyload movie-img"/>
                                 <p class="text-center" style="margin-top:6px">
                                 <span style="color:#444">
-                                    {%if movie.movie.moviename|length >= 8 %}
-                                    {{movie.movie.moviename|slice:'6'}} ...
+                                    {%if movie.moviename|length >= 8 %}
+                                    {{movie.moviename|slice:'6'}} ...
                                     {%else%}
-                                    {{movie.movie.moviename}}
+                                    {{movie.moviename}}
                                     {%endif%}
                                 </span>
                                 </p>
                             </a>
 
                             <p class="text-center movie-rating" style="margin-top:3px">
-                                <span class="label label-info">评分：{{movie.movie.averating}}</span>
+                                <span class="label label-info">评分：{{movie.averating}}</span>
                             </p>
                         </div>
                         {% endfor %}
