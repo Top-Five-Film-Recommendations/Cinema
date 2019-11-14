@@ -30,7 +30,7 @@ from django.conf.urls import url
 from Cinema_Pages.views import Cinema_Pages_view, index, reCal_spark, movie_type, calDefaultRecom
 from user.views import LoginView, LogoutView,RegisterView
 from movie.views import ContentView, AddReview
-from search.views import movie_search
+from search.views import MovieSearch
 
 
 urlpatterns = [
@@ -47,7 +47,7 @@ urlpatterns = [
     path('index.html/~', reCal_spark, name='reCal_spark'),
     path('movie_display.html/~', calDefaultRecom, name='reCal_coldstart'),
     re_path(r'^movie/type/(?P<type>[\w]+)/', movie_type, name='movie_type'),
-    re_path(r'^movie/search/', movie_search, name='movie_search')
+    re_path(r'^movie/search/', MovieSearch.as_view(), name='movie_search')
 ]
 #
 #     #weisg
