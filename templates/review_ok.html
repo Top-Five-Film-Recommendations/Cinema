@@ -18,7 +18,9 @@
 <body>
 <script type="text/javascript">
     window.onload = function(){
-        alert("评论成功");
+        var msg = {{ msg|safe }}
+        alert(msg.msg);
+        {#window.location.reload();#}
         window.location.href = "javascript:history.go(-1);";
         self.location=document.referrer;
     }

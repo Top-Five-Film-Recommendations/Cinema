@@ -212,7 +212,7 @@
                     </div>
                     <div class="col-sm-12" style="margin-left:20px;margin-top:5px">
                         {% if request.user.is_authenticated %}
-                        <form action="{% url 'add_review'%}" method="post" class="comment-form" role="form">
+                        <form name="form" method="post" id="form">
                             <input type='hidden' name='movie_id' value="{{ movie.id }}" />
 
                             <div class="row">
@@ -240,11 +240,14 @@
                             <div class="row">
                                 <div class="col-sm-8">
                                     <label> 内容：</label>
-                                    <textarea class="form-control" name="comments" rows="3"></textarea>
-                                    <button type="submit" class="comment-btn">提交</button>
+                                    <textarea class="form-control" name="comments" id="comments"  rows="3"></textarea>
+
+                                    <input type="button" value="提交评论" onclick="return addAction()" />
+                                    <input type="button" value="删除" onclick="return deleteAction()"/>
                                 </div>
                             </div>
                         </form>
+
                         {% else %}
                              <p class="text-left" style="font-size: 27px" >请先登录！</p>
                         {% endif %}
@@ -292,6 +295,21 @@
 <a class="bloc-button btn btn-d scrollToTop" onclick="scrollToTarget('1')"><span
         class="fa fa-chevron-up"></span></a>
 <!-- ScrollToTop Button END-->
+
+<script type="text/javascript">
+    function addAction(){
+        document.getElementById("form").action="{% url 'add_review' %}";//提交的url
+        document.getElementById("form").submit();
+
+    }
+
+    function deleteAction(){
+        document.getElementById("form").action="{% url 'deletereview' %}";//提交的url
+        document.getElementById("form").submit();
+    }
+</script>
+
+
 
 </body>
 </html>

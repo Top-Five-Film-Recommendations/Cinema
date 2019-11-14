@@ -7,15 +7,15 @@ import datetime
 
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
-# from operation.models import Top5Recommend
+
 # from operation.views import recommendForUser
 from .models import MovieInfo, MovieSimilar, Review
 
 # Create your views here.
 from django.views import View
 from django.http import HttpResponse
+import json
 
-# 建议view方法全部使用class，以便统一管理
 
 class ContentView(View):
     # 此部分应该有两个推荐，目前只做了基于电影相似程度的推荐
@@ -55,9 +55,16 @@ class AddReview(View):
     def post(self, request):
         if not request.user.is_authenticated:
             return HttpResponse('{"status":"fail",",msg":"用户未登陆"}', content_type='application/json')
+
+
+        user = request.user
         movie_id = request.POST.get("movie_id", '0')
         comments = request.POST.get("comments", "")
         star = request.POST.get("star", '1')
+
+        comment = Review.objects.filter(user_id = user, movie_id=movie_id)
+        if comment:
+            return render(request, 'review_fail.html', {'msg':json.dumps({"msg": ("您已经评论过，不能再评论")})})
 
         if int(movie_id) > int(0) and comments:
             movie_comments = Review()
@@ -72,6 +79,17 @@ class AddReview(View):
             # movie_comments.star = 3.0
             movie_comments.save()
             #需要修改
-            return render(request, 'review_ok.html',{"msg": "注册成功，请登录"})
+            return render(request, 'review_ok.html',{'msg':json.dumps({"msg": ("评论成功")})})
         else:
-            return render(request, 'review_fail.html', {"msg": "评论失败"})
+            return render(request, 'review_fail.html',{'msg':json.dumps({"msg": ("评论失败，请重新尝试")})})
+
+
+class DeleteReview(View):
+    def post(self,request):
+        user = request.user
+        movie_id = request.POST.get("movie_id", '0')
+        comment = Review.objects.filter(user_id = user, movie_id=movie_id)
+        if not comment:
+            return render(request, 'review_fail.html', {'msg':json.dumps({"msg": ("您还未进行评论")})})
+        Review.objects.filter(user_id=user,movie_id=movie_id).delete()
+        return render(request, 'review_ok.html', {'msg':json.dumps({"msg": ("删除评论成功")})})
