@@ -14,6 +14,7 @@ from Cinema_Pages.models import DefaultRecom, StaRecom
 from user.models import UserProfile
 from django.db.models import Q
 from elasticsearch import Elasticsearch
+import happybase
 
 # old
 # from .func import fuzzy_finder

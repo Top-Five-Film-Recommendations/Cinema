@@ -1,6 +1,5 @@
 
 import datetime
-import thrift
 import happybase
 
 from django.core.validators import MaxValueValidator, MinValueValidator
