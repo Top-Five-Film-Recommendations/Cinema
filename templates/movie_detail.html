@@ -142,29 +142,41 @@
                     </div>
                 </div>
 
-{#                <!--豆瓣影评 Top5-->#}
+                <!--豆瓣影评 Top5-->
+{#                {% if not douban_review is None %}#}
 {#                <div class="col-sm-12" style="margin-top:30px">#}
 {#                    <div>#}
-{#                        <h3 class="detail-page-title"><span class="label label-primary">豆瓣影评 Top5</span></h3>#}
+{#                        <h3 class="detail-page-title"><span class="label label-primary">豆瓣影评</span></h3>#}
 {#                    </div>#}
 {#                    <div style="margin-top:10px">#}
-{#                        {% for i in movie.reviews %}#}
+{#                        {% for i in douban_review %}#}
 {#                        <div class="col-sm-9 reviews" style="margin-top:20px">#}
 {#                            <div class="review-item">#}
-{#                                <a href="{{i.alt}}/">#}
-{#                                    <img width="28" height="28" src="{{i.user.avatar}}"#}
-{#                                         style="border:#337ab7;border-style:double">#}
-{#                                    <span class="label label-info">{{i.title}}</span>#}
-{#                                    <div class="review-summary">#}
-{#                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{i.summary}}#}
-{#                                    </div>#}
-{#                                </a>#}
+{#                                <header class="main-hd">#}
+{#                                <span class="label label-info">#}
+{#                                    {{i.username}}#}
+{#                                </span>#}
+{#                                    <span>#}
+{#                                        &nbsp#}
+{#                                    </span>#}
+{#                                    <span class="label label-success">#}
+{#                                    评分：{{i.star}}#}
+{#                                    </span>#}
+{#                                    <span>#}
+{#                                        &nbsp#}
+{#                                    </span>#}
+{#                                </header>#}
+{##}
+{#                                <div class="review-summary">#}
+{#                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{i.comments}}#}
+{#                                </div>#}
 {#                            </div>#}
 {#                        </div>#}
 {#                        {% endfor %}#}
 {#                    </div>#}
 {#                </div>#}
-{#                <!--豆瓣影评 Top5 END-->#}
+{#                {% endif %}#}
+                <!--豆瓣影评 Top5 END-->
 
                 <!--本站影评-->
                 {% if not review_list is None %}

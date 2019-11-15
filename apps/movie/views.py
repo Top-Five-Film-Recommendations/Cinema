@@ -15,16 +15,14 @@ from .models import MovieInfo, MovieSimilar, Review
 from django.views import View
 from django.http import HttpResponse
 import json
-
+# 设调取豆瓣评论的API为 douban()
 
 class ContentView(View):
-    # 此部分应该有两个推荐，目前只做了基于电影相似程度的推荐
+
     def get(self, request, movie_id):
         movieinfo = MovieInfo.objects.get(id=movie_id)
 
         # 对用户进行的个性化推荐，user_recommend_movies显示在电影详情页右侧
-        # 缺少“喜欢该电影的用户也喜欢” 即协同过滤的推荐，未完成
-
 
         # 判断用户是否已经给电影打分了。如果已打分则返回打分分数
         all_comments = None
@@ -35,17 +33,22 @@ class ContentView(View):
         except:
             pass
 
+        # douban_review = douban(movie_id)
+
+
         all_comments = Review.objects.filter(movie_id=movie_id)
 
         # 相似电影
         similar_movies_ids = MovieSimilar.objects.filter(item1=movie_id).order_by('-similar')
         similar_movies = list(map(lambda x: MovieInfo.objects.get(id=x.item2), similar_movies_ids))
 
+
+
         return render(request, 'movie_detail.html', {"movie": movieinfo,
                                                 "recommend_list": similar_movies[0: 8],
                                                      # 这里用recommend_list 代替了similar
                                                 "review_list": all_comments,
-                                                # "rating_star": rating_star,
+                                                # "douban_review" :douban_review
                                                 "form": Review()
                                                 })
 
