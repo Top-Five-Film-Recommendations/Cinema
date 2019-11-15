@@ -49,7 +49,7 @@ urlpatterns = [
     re_path(r'^movie/type/(?P<type>[\w]+)/', movie_type, name='movie_type'),
     re_path(r'^movie/search/', MovieSearch.as_view(), name='movie_search'),
     path('delete_comment/', DeleteReview.as_view(), name='deletereview'),
-    re_path(r'^movie/ucf',ucf_recom , name='movie_type')
+    re_path(r'^movie/ucf',ucf_recom , name='ucf')
 ]
 #
 #     #weisg
