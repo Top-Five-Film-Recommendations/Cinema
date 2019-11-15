@@ -32,7 +32,7 @@ SECRET_KEY = 't21)d($@*k+9db6-rxq=p!=e@00bc9n@w^)p0gd=rlgu(lc%6t'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'testserver', ]
+ALLOWED_HOSTS = ['*' ]
 
 
 # Application definition
@@ -98,7 +98,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'cinema',# 后续需要改
         'USER': 'root',  #数据库登录用户名
-        'PASSWORD': 'xt032341',  #数据库登录密码
+        'PASSWORD': 'Cloud302@',  #数据库登录密码
         'HOST': 'localhost',  #数据库所在主机
         'PORT': '3306',  #数据库端口
     }
