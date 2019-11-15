@@ -143,71 +143,71 @@
                 </div>
 
                 <!--豆瓣影评 Top5-->
-{#                {% if not douban_review is None %}#}
-{#                <div class="col-sm-12" style="margin-top:30px">#}
-{#                    <div>#}
-{#                        <h3 class="detail-page-title"><span class="label label-primary">豆瓣影评</span></h3>#}
-{#                    </div>#}
-{#                    <div style="margin-top:10px">#}
-{#                        {% for i in douban_review %}#}
-{#                        <div class="col-sm-9 reviews" style="margin-top:20px">#}
-{#                            <div class="review-item">#}
-{#                                <header class="main-hd">#}
-{#                                <span class="label label-info">#}
-{#                                    {{i.username}}#}
-{#                                </span>#}
-{#                                    <span>#}
-{#                                        &nbsp#}
-{#                                    </span>#}
-{#                                    <span class="label label-success">#}
-{#                                    评分：{{i.star}}#}
-{#                                    </span>#}
-{#                                    <span>#}
-{#                                        &nbsp#}
-{#                                    </span>#}
-{#                                </header>#}
-{##}
-{#                                <div class="review-summary">#}
-{#                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{i.comments}}#}
-{#                                </div>#}
-{#                            </div>#}
-{#                        </div>#}
-{#                        {% endfor %}#}
-{#                    </div>#}
-{#                </div>#}
-{#                {% endif %}#}
-                <!--豆瓣影评 Top5 END-->
-
-                <!--本站影评-->
-                {% if not review_list is None %}
+                {% if douban_review %}
                 <div class="col-sm-12" style="margin-top:30px">
                     <div>
-                        <h3 class="detail-page-title"><span class="label label-primary">本站影评</span></h3>
+                        <h3 class="detail-page-title"><span class="label label-primary">豆瓣影评</span></h3>
                     </div>
                     <div style="margin-top:10px">
-                        {% for i in review_list %}
+                        {% for rowkey,dict in douban_review %}
                         <div class="col-sm-9 reviews" style="margin-top:20px">
                             <div class="review-item">
                                 <header class="main-hd">
                                 <span class="label label-info">
-                                    {{i.user}}
+                                    {{dict.user_name }}
                                 </span>
                                     <span>
                                         &nbsp
                                     </span>
                                     <span class="label label-success">
-                                    评分：{{i.star}}
+                                    评分：{{dict.score}}
+                                    </span>
+                                    <span>
+                                        &nbsp
+                                    </span>
+                                </header>
+
+                                <div class="review-summary">
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{dict.comment_detail}}
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+                <!--豆瓣影评 Top5 END-->
+
+                <!--本站影评-->
+                {% if user_review %}
+                <div class="col-sm-12" style="margin-top:30px">
+                    <div>
+                        <h3 class="detail-page-title"><span class="label label-primary">本站影评</span></h3>
+                    </div>
+                    <div style="margin-top:10px">
+                        {% for rowkey,dict in user_review %}
+                        <div class="col-sm-9 reviews" style="margin-top:20px">
+                            <div class="review-item">
+                                <header class="main-hd">
+                                <span class="label label-info">
+                                    {{dict.user}}
+                                </span>
+                                    <span>
+                                        &nbsp
+                                    </span>
+                                    <span class="label label-success">
+                                    评分：{{dict.star}}
                                     </span>
                                     <span>
                                         &nbsp
                                     </span>
                                     <span class="label label-warning">
-                                    {{i.reviewtime}}
+                                    {{dict.reviewtime}}
                                     </span>
                                 </header>
 
                                 <div class="review-summary">
-                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{i.content}}
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{dict.content}}
                                 </div>
                             </div>
                         </div>
@@ -271,7 +271,7 @@
         </div>
 
         <!--相似电影推荐-->
-        {% if not recommend_list is None %}
+        {% if recommend_list %}
         <div style="float:right;width:200px;margin-top:85px">
             <h3 class="detail-page-title"><span class="label label-primary">相似电影推荐</span></h3>
             <div>

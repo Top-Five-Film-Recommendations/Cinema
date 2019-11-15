@@ -24,32 +24,26 @@ class ContentView(View):
 
         # 对用户进行的个性化推荐，user_recommend_movies显示在电影详情页右侧
 
-        # 判断用户是否已经给电影打分了。如果已打分则返回打分分数
-        all_comments = None
-        rating_star = 0
-        try:
-            movie = Review.objects.get(movie_id=movie_id, user_id=request.user.id)
-            rating_star = movie.star
-        except:
-            pass
-
-        # douban_review = douban(movie_id)
+        movie_comments = Review()
+        douban_review = movie_comments.getComments_movie(movie_id)
 
 
-        all_comments = Review.objects.filter(movie_id=movie_id)
+        all_comments = movie_comments.getUserComments_movie(movie_id)
+        movie_comments.free()
 
         # 相似电影
-        similar_movies_ids = MovieSimilar.objects.filter(item1=movie_id).order_by('-similar')
-        similar_movies = list(map(lambda x: MovieInfo.objects.get(id=x.item2), similar_movies_ids))
+        movie_similar = MovieSimilar()
+        similar_movies = movie_similar.getSimilar(movie_id)
+
 
 
 
         return render(request, 'movie_detail.html', {"movie": movieinfo,
                                                 "recommend_list": similar_movies[0: 8],
                                                      # 这里用recommend_list 代替了similar
-                                                "review_list": all_comments,
-                                                # "douban_review" :douban_review
-                                                "form": Review()
+                                                "user_review": all_comments,
+                                                "douban_review" :douban_review
+                                                # "form": Review()
                                                 })
 
 
@@ -60,7 +54,7 @@ class AddReview(View):
             return HttpResponse('{"status":"fail",",msg":"用户未登陆"}', content_type='application/json')
 
 
-        user = request.user
+        user_id = str(request.user.id)
         movie_id = request.POST.get("movie_id", '0')
         comments = request.POST.get("comments", "")
         star = request.POST.get("star", '1')
@@ -71,10 +65,11 @@ class AddReview(View):
 
         if int(movie_id) > int(0) and comments:
             movie_comments = Review()
-            comment = movie_comments.hasUserComment(movie_id=movie_id, user_id=user)
+            comment = movie_comments.hasUserComment(movie_id=movie_id, user_id=user_id)
             if comment:
                 return render(request, 'review_fail.html', {'msg':json.dumps({"msg": ("您已经评论过，不能再评论")})})
-            movie_comments.addComment(movie_id=movie_id, user_id=user, content=comments, star=float(star))
+            movie_comments.addUserComment(movie_id=movie_id, user_id=user_id, content=comments, star=str(star),
+                                          reviewtime=datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
             movie_comments.free()
             # movie = MovieInfo.objects.get(id=movie_id)
             # movie_comments.movie = movie
@@ -94,13 +89,13 @@ class AddReview(View):
 
 class DeleteReview(View):
     def post(self,request):
-        user = request.user
+        user_id = str(request.user.id)
         movie_id = request.POST.get("movie_id", '0')
         movie_comments = Review()
-        comment = movie_comments.hasUserComment(movie_id=movie_id, user_id=user)
+        comment = movie_comments.hasUserComment(movie_id=movie_id, user_id=user_id)
         if not comment:
             return render(request, 'review_fail.html', {'msg':json.dumps({"msg": ("您还未进行评论")})})
-        movie_comments.deleteComment(movie_id=movie_id, user_id=user)
+        movie_comments.deleteComment(movie_id=movie_id, user_id=user_id)
         movie_comments.free()
         # Review.objects.filter(user_id=user,movie_id=movie_id).delete()
         return render(request, 'review_ok.html', {'msg':json.dumps({"msg": ("删除评论成功")})})

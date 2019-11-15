@@ -28,23 +28,6 @@ def index(request):
 
 # 推荐函数，包括默认推荐和用户推荐
 # 未做：协同过滤和用户登录后的推荐
-def recommendForUser(request):
-
-    user = request.user
-    default_recommend_movies = DefaultRecom.objects.all()
-
-    if user.is_authenticated:
-        # 如果用户已经登陆
-        calStaRecom(user.id)# 使用方法待定，可能改为每天更新一次
-        user_recommend_movies = StaRecom.objects.filter(user_id=user.id)
-        # defautl和recommend随机选取5个， 同时避免了recommend不足5个的情况
-        # 如果是新用户，则推荐默认的8部电影
-        if user_recommend_movies.count() < 8:
-            user_recommend_movies = default_recommend_movies
-    else:
-        # 如果用户没有登陆
-        user_recommend_movies = default_recommend_movies
-    return user_recommend_movies
 
 
 def sortAverating(val):
@@ -116,86 +99,91 @@ def calDefaultRecom(request):
     })
 
 
-def sortThird(val):
-    return val[2]
+# def sortThird(val):
+#     return val[2]
 
-# 基于统计的对用户的推荐
-def calStaRecom(current_user_id):
-    # 遍历review表，提取current user的前8个最近评价的电影。
-    reviews_descend = Review.objects.all().filter(user_id=current_user_id).order_by('-reviewtime')
+'''
+#  基于统计的对用户的推荐
+# def calStaRecom(current_user_id):
+#     # 遍历review表，提取current user的前8个最近评价的电影。
+#     movie_comments = Review()
+#     reviews_descend = Review.objects.all().filter(user_id=current_user_id).order_by('-reviewtime')
+# 
+#     # 取前8个最近的评价
+#     if len(reviews_descend) > 50:
+#         # top_list.append(reviews_descend[i].movie_id)
+#         reviews_descend = reviews_descend[0: 25]
+# 
+#     # 对前8个最近的评价按star排序
+# 
+#     # convert query to list
+#     tuple_list = []
+#     for review in reviews_descend:
+#         tuple_ = (review.user_id, review.movie_id, review.star)
+#         tuple_list.append(tuple_)
+# 
+#     tuple_list.sort(key=sortThird, reverse=True)
+# 
+#     if len(tuple_list) > 8:
+#         tuple_list = tuple_list[0: 8]
+# 
+#     # 取Movie_id
+#     top_list = []
+#     for review in tuple_list:
+#         top_list.append(review[1])
+# 
+#     # 每个movie_id对应取得similar movie 的个数
+#     num_every_top = 2
+#     # 对多个高分评价电影，遍历similarity表，匹配最相似的电影，存储进Top8Recommend表。
+# 
+#     # 8个相似推荐
+#     recommend_list = []
+#     for i in range(len(top_list)):
+#         recommend_queryset = MovieSimilar.objects.filter(
+#             Q(item1__in=[top_list[i]]) | Q(item2__in=[top_list[i]])).order_by('-similar')[: num_every_top]
+#         for item in recommend_queryset:
+# 
+#             # 只推荐16个
+#             if len(recommend_list) == 16:
+#                 break
+# 
+#             if (item.item1 == top_list[i]) and (item.item2 not in recommend_list):
+#                 recommend_list.append(item.item2)
+#             if (item.item2 == top_list[i]) and (item.item1 not in recommend_list):
+#                 recommend_list.append(item.item1)
+#         # 只推荐8个
+#         if len(recommend_list) == 16:
+#             break
+# 
+#     '''
+#     # 新用户，个性推荐不足8个
+#     if len(recommend_list) < 8:
+#         queryset = Default5Recommend.objects.all()
+#         for movie in queryset:
+#             if len(recommend_list) < 8 and movie.movie_id not in recommend_list:
+#                 recommend_list.append(movie.movie_id)
+#    '''
+#
+#     # 将当前用户的往期相似推荐删除
+#     StaRecom.objects.filter(user_id=current_user_id).delete()
+#
+#     # 将recommend_list 存进 Top8Recommend
+#     # print ('****------*******\n recommend_list : ',recommend_list)
+#     for movie_id in recommend_list:
+#         starecom = StaRecom()
+#         movie = MovieInfo.objects.get(id=movie_id)
+#         user = UserProfile.objects.get(id=current_user_id)
+#         starecom.movie = movie
+#         starecom.user = user
+#         starecom.save()
+#
+#     movie_comments.free()
 
-    # 取前8个最近的评价
-    if len(reviews_descend) > 50:
-        # top_list.append(reviews_descend[i].movie_id)
-        reviews_descend = reviews_descend[0: 25]
-
-    # 对前8个最近的评价按star排序
-
-    # convert query to list
-    tuple_list = []
-    for review in reviews_descend:
-        tuple_ = (review.user_id, review.movie_id, review.star)
-        tuple_list.append(tuple_)
-
-    tuple_list.sort(key=sortThird, reverse=True)
-
-    if len(tuple_list) > 8:
-        tuple_list = tuple_list[0: 8]
-
-    # 取Movie_id
-    top_list = []
-    for review in tuple_list:
-        top_list.append(review[1])
-
-    # 每个movie_id对应取得similar movie 的个数
-    num_every_top = 2
-    # 对多个高分评价电影，遍历similarity表，匹配最相似的电影，存储进Top8Recommend表。
-
-    # 8个相似推荐
-    recommend_list = []
-    for i in range(len(top_list)):
-        recommend_queryset = MovieSimilar.objects.filter(
-            Q(item1__in=[top_list[i]]) | Q(item2__in=[top_list[i]])).order_by('-similar')[: num_every_top]
-        for item in recommend_queryset:
-
-            # 只推荐16个
-            if len(recommend_list) == 16:
-                break
-
-            if (item.item1 == top_list[i]) and (item.item2 not in recommend_list):
-                recommend_list.append(item.item2)
-            if (item.item2 == top_list[i]) and (item.item1 not in recommend_list):
-                recommend_list.append(item.item1)
-        # 只推荐8个
-        if len(recommend_list) == 16:
-            break
-
-    '''
-    # 新用户，个性推荐不足8个
-    if len(recommend_list) < 8:
-        queryset = Default5Recommend.objects.all()
-        for movie in queryset:
-            if len(recommend_list) < 8 and movie.movie_id not in recommend_list:
-                recommend_list.append(movie.movie_id)
-   '''
-
-    # 将当前用户的往期相似推荐删除
-    StaRecom.objects.filter(user_id=current_user_id).delete()
-
-    # 将recommend_list 存进 Top8Recommend
-    # print ('****------*******\n recommend_list : ',recommend_list)
-    for movie_id in recommend_list:
-        starecom = StaRecom()
-        movie = MovieInfo.objects.get(id=movie_id)
-        user = UserProfile.objects.get(id=current_user_id)
-        starecom.movie = movie
-        starecom.user = user
-        starecom.save()
 
 
 class Cinema_Pages_view(View):
     def get(self, request):
-        user_recommend_movie = recommendForUser(request=request)
+        user_recommend_movie = DefaultRecom.objects.all()
         movie_list = []
         for movie in user_recommend_movie:
             movie_list.append(movie.movie)
@@ -261,9 +249,8 @@ def ucf_recom(request):
     user_id = request.user
     movie_id_str = ucf(user_id)
     movie_list = []
-    if not movie_id_str:
+    if len(movie_id_str)>0:
         movie_id_list = movie_id_str.split(',')
-
         for movie_id in movie_id_list:
             tmp = MovieInfo.objects.get(id=int(movie_id))
             movie_list.append(tmp)
@@ -278,9 +265,11 @@ def ucf_recom(request):
 def ucf(user_id):
     connection = happybase.Connection(host='39.100.88.119', port=9090)
     connection.open()
-    recommend_table = happybase.Table('recommend', self.connection)
-    value = recommend_table.row(user_id)
-    connection.close()
-    return value
+    recommend_table = happybase.Table('recommend', connection)
+    tmp = recommend_table.row(str(user_id))
+    movie_id = ''
+    for key, value in tmp.items():
+        movie_id = value.decode('utf-8')
+    return movie_id
 
 

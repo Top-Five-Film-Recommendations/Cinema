@@ -19,21 +19,21 @@ class DefaultRecom(models.Model):
         verbose_name_plural = verbose_name
 
 
-
-class StaRecom(models.Model):
-
-    movie = models.ForeignKey(MovieInfo, verbose_name='电影', on_delete=models.CASCADE)
-    user = models.ForeignKey(UserProfile, verbose_name='用户', on_delete=models.CASCADE)
-    rating = models.FloatField(default=0, verbose_name='评分')
-
-    def __str__(self):
-        return '%s - %s -%lf' % (self.user, self.movie, self.rating)
-        # return '%s - %s -%lf' % (self.userid, self.movieid, self.rating)
-
-    class Meta:
-        verbose_name = '用户推荐信息'
-        verbose_name_plural = verbose_name
-
-
+#
+# class StaRecom(models.Model):
+#
+#     movie = models.ForeignKey(MovieInfo, verbose_name='电影', on_delete=models.CASCADE)
+#     user = models.ForeignKey(UserProfile, verbose_name='用户', on_delete=models.CASCADE)
+#     rating = models.FloatField(default=0, verbose_name='评分')
+#
+#     def __str__(self):
+#         return '%s - %s -%lf' % (self.user, self.movie, self.rating)
+#         # return '%s - %s -%lf' % (self.userid, self.movieid, self.rating)
+#
+#     class Meta:
+#         verbose_name = '用户推荐信息'
+#         verbose_name_plural = verbose_name
+#
+#
 
 

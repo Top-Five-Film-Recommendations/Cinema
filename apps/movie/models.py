@@ -6,18 +6,6 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 
 from user.models import UserProfile
-# 电影的存储未考虑切分演员，导演等等
-# # 电影类型表，貌似没用
-# class MovieCategory(models.Model):
-#     category = models.CharField(max_length=100, default='', verbose_name='电影类型')
-#     movienum = models.IntegerField(default=0, verbose_name='对应电影数量')
-#
-#     def __str__(self):
-#         return self.category
-#
-#     class Meta:
-#         verbose_name = '电影类型'
-#         verbose_name_plural = verbose_name
 
 # 电影详情表
 class MovieInfo(models.Model):
@@ -72,26 +60,65 @@ class MovieInfo(models.Model):
 
 # 电影相似度表
 class MovieSimilar(models.Model):
-    item1 = models.IntegerField(default=0, verbose_name='电影id')
-    item2 = models.IntegerField(default=0, verbose_name='电影id')
 
-    similar = models.FloatField(default=0, verbose_name='相似度')
-
-    def __str__(self):
-        return '%d - %d - %lf' % (self.item1, self.item2, self.similar)
-
-    class Meta:
-        verbose_name = '电影相似度信息'
-        verbose_name_plural = verbose_name
-
-# 用户评论以及电影评分表
-# 一条评论是属于一个用户对一个电影的，所以user和movie都是多对一，使用ForeignKey
-class Review(models.Model):
+    connection = None
     def __init__(self):
         connection = happybase.Connection(host='39.100.88.119', port=9090)
         connection.open()
 
 
+    def getSimilar(self,movie_id):
+        recommend_table = happybase.Table('movie_sim_1', self.connection)
+        tmp_dict = recommend_table.row(str(movie_id))
+        movie_id_str = ''
+        for key, value in tmp_dict.items():
+            movie_id_str = value.decode('utf-8')
+        movie_list = []
+        if len(movie_id_str) > 0:
+            movie_id_list = movie_id_str.split(',')
+            for movie_id in movie_id_list:
+                tmp = MovieInfo.objects.get(id=int(movie_id))
+                movie_list.append(tmp)
+        return movie_list
+    # item1 = models.IntegerField(default=0, verbose_name='电影id')
+    # item2 = models.IntegerField(default=0, verbose_name='电影id')
+    #
+    # similar = models.FloatField(default=0, verbose_name='相似度')
+    #
+    # def __str__(self):
+    #     return '%d - %d - %lf' % (self.item1, self.item2, self.similar)
+    #
+    # class Meta:
+    #     verbose_name = '电影相似度信息'
+    #     verbose_name_plural = verbose_name
+
+# 用户评论以及电影评分表
+# 一条评论是属于一个用户对一个电影的，所以user和movie都是多对一，使用ForeignKey
+
+
+class Review(models.Model):
+    connection = None
+    def __init__(self):
+        connection = happybase.Connection(host='39.100.88.119', port=9090)
+        connection.open()
+
+
+    def revert(self, result):
+        li = []
+        if(len(result)>0):
+            for i in range(0,len(result)):
+                key = result[i][0]
+                dic = result[i][1]
+                key = key.decode('utf-8')
+                Dic = {}
+                for rowkey, value in dic.items():
+                    tmp = (rowkey.decode('utf-8').split(':'))[1]
+                    Dic[tmp] = value.decode('utf-8')
+                tup = (key, Dic)
+                li.append(tup)
+            return li
+        else:
+            return None
     # STAR_RANGE = [
     #     MaxValueValidator(5),
     #     MinValueValidator(0)
@@ -118,38 +145,61 @@ class Review(models.Model):
     # result = list(query)
     # connection.close()
 
-    def getComments(movie_id):
+# 需要全部转成utf-8
+
+    def getComments_movie(self,movie_id):
         comment_table = happybase.Table('comment', self.connection)
-        query_str = "RowFilter (=, 'substring:_" + movie_id + "')"
+        query_str = "RowFilter (=, 'substring:_" + str(movie_id) + "')"
         query = comment_table.scan(filter=query_str, limit=1000)
         result = list(query)
-        print(result)
+        result = self.revert(result)
+        return result
 
 
-    def hasUserComment(movie_id, user_id):
+    def getUserComments_movie(self,movie_id):
         comment_table = happybase.Table('comment_local', self.connection)
-        query_str = "RowFilter (=, 'binary:" + user_id + "_" + movie_id + "')"
+        query_str = "RowFilter (=, 'substring:_" + str(movie_id) + "')"
         query = comment_table.scan(filter=query_str, limit=1000)
         result = list(query)
+        result = self.revert(result)
+        return result
+
+    def getUserComment_user(self, user_id):
+        comment_table = happybase.Table('comment_local', self.connection)
+        query_str = "RowFilter (=, 'substring:" + str(user_id) + "_')"
+        query = comment_table.scan(filter=query_str, limit=1000)
+        result = list(query)
+        result = self.revert(result)
+        return result
+
+    def hasUserComment(self, movie_id, user_id):
+        comment_table = happybase.Table('comment_local', self.connection)
+        query_str = "RowFilter (=, 'binary:" + str(user_id) + "_" + str(movie_id) + "')"
+        query = comment_table.scan(filter=query_str, limit=1000)
+        result = list(query)
+        result = self.revert(result)
         if len(result) == 0:
             return False
         else:
             return True
 
 
-    def addComment(movie_id, user_id, content, star):
+    def addUserComment(self,movie_id, user_id, content, star, reviewtime):
+
         comment_table = happybase.Table('comment_local', self.connection)
-        if hasUserComment(movie_id, user_id):
+        if self.hasUserComment(movie_id, user_id):
             return False
-        comment_table.put(user_id + "_" + movie_id, {"region:content": content, "region:star": star})
+        comment_table.put(str(user_id) + "_" + str(movie_id), {"region:content": str(content),
+                                                     "region:star": str(star),
+                                                     "region:reviewtime":str(reviewtime)})
 
 
-    def deleteComment(movie_id, user_id):
+    def deleteUserComment(self, movie_id, user_id):
         comment_table = happybase.Table('comment_local', self.connection)
-        comment_table.delete(user_id + "_" + movie_id)
+        comment_table.delete(str(user_id)+ "_" + str(movie_id))
 
 
-    def free():
+    def free(self):
         self.connection.close()
 
 
