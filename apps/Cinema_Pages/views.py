@@ -275,6 +275,11 @@ def ucf_recom(request):
 
 # 这是ucf 即接口函数
 def ucf(user_id):
-    return None
+    connection = happybase.Connection(host='39.100.88.119', port=9090)
+    connection.open()
+    recommend_table = happybase.Table('recommend', self.connection)
+    value = recommend_table.row(user_id)
+    connection.close()
+    return value
 
 

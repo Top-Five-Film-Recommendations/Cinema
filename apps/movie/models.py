@@ -88,37 +88,77 @@ class MovieSimilar(models.Model):
 # 用户评论以及电影评分表
 # 一条评论是属于一个用户对一个电影的，所以user和movie都是多对一，使用ForeignKey
 class Review(models.Model):
-    STAR_RANGE = [
-        MaxValueValidator(5),
-        MinValueValidator(0)
-    ]
-    # int
-    user = models.ForeignKey(UserProfile, verbose_name='用户', on_delete=models.CASCADE)
-    # int
-    movie = models.ForeignKey(MovieInfo, verbose_name='电影', on_delete=models.CASCADE)
-    # str
-    content = models.TextField(max_length=255, default='', verbose_name='评论', null=True, blank=True)
-    # float
-    star = models.FloatField(default=0, validators=STAR_RANGE, verbose_name='星级')
-    # datetime.datetime
-    reviewtime = models.DateTimeField(default=datetime.datetime.now, verbose_name='提交时间')
+    def __init__(self):
+        connection = happybase.Connection(host='39.100.88.119', port=9090)
+        connection.open()
+
+
+    # STAR_RANGE = [
+    #     MaxValueValidator(5),
+    #     MinValueValidator(0)
+    # ]
+    # # int
+    # user = models.ForeignKey(UserProfile, verbose_name='用户', on_delete=models.CASCADE)
+    # # int
+    # movie = models.ForeignKey(MovieInfo, verbose_name='电影', on_delete=models.CASCADE)
+    # # str
+    # content = models.TextField(max_length=255, default='', verbose_name='评论', null=True, blank=True)
+    # # float
+    # star = models.FloatField(default=0, validators=STAR_RANGE, verbose_name='星级')
+    # # datetime.datetime
+    # reviewtime = models.DateTimeField(default=datetime.datetime.now, verbose_name='提交时间')
 
     # connection = happybase.Connection(host='39.100.88.119', port=9090)
     # connection.open()
     # # tableList = connection.tables()
-    # # commentTable = happybase.Table('comment', connection)
-    # # row = commentTable.row('10344754_https://www.douban.com/people/119429128/')
-    # # region = commentTable.regions()
+    # # comment_table = happybase.Table('comment', connection)
+    # # row = comment_table.row('10344754_https://www.douban.com/people/119429128/')
+    # # region = comment_table.regions()
     # query_str = "RowFilter (=, 'regexstring:26752088*')"
-    # query = commentTable.scan(filter=query_str, limit=1000)
+    # query = comment_table.scan(filter=query_str, limit=1000)
     # result = list(query)
     # connection.close()
 
-    def __str__(self):
-        return '%s - %s - %lf' % (self.user.username, self.movie.moviename, self.star)
+    def getComments(movie_id):
+        comment_table = happybase.Table('comment', self.connection)
+        query_str = "RowFilter (=, 'substring:_" + movie_id + "')"
+        query = comment_table.scan(filter=query_str, limit=1000)
+        result = list(query)
+        print(result)
 
-    class Meta:
-        verbose_name = '用户打分及评论'
-        verbose_name_plural = verbose_name
+
+    def hasUserComment(movie_id, user_id):
+        comment_table = happybase.Table('comment_local', self.connection)
+        query_str = "RowFilter (=, 'binary:" + user_id + "_" + movie_id + "')"
+        query = comment_table.scan(filter=query_str, limit=1000)
+        result = list(query)
+        if len(result) == 0:
+            return False
+        else:
+            return True
+
+
+    def addComment(movie_id, user_id, content, star):
+        comment_table = happybase.Table('comment_local', self.connection)
+        if hasUserComment(movie_id, user_id):
+            return False
+        comment_table.put(user_id + "_" + movie_id, {"region:content": content, "region:star": star})
+
+
+    def deleteComment(movie_id, user_id):
+        comment_table = happybase.Table('comment_local', self.connection)
+        comment_table.delete(user_id + "_" + movie_id)
+
+
+    def free():
+        self.connection.close()
+
+
+    # def __str__(self):
+    #     return '%s - %s - %lf' % (self.user.username, self.movie.moviename, self.star)
+
+    # class Meta:
+    #     verbose_name = '用户打分及评论'
+    #     verbose_name_plural = verbose_name
 
 

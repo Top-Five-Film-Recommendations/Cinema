@@ -65,22 +65,27 @@ class AddReview(View):
         comments = request.POST.get("comments", "")
         star = request.POST.get("star", '1')
 
-        comment = Review.objects.filter(user_id = user, movie_id=movie_id)
-        if comment:
-            return render(request, 'review_fail.html', {'msg':json.dumps({"msg": ("您已经评论过，不能再评论")})})
+        # comment = Review.objects.hasUserComment(movie_id=movie_id, user_id=user)
+        # if comment:
+        #     return render(request, 'review_fail.html', {'msg':json.dumps({"msg": ("您已经评论过，不能再评论")})})
 
         if int(movie_id) > int(0) and comments:
             movie_comments = Review()
-            movie = MovieInfo.objects.get(id=movie_id)
-            movie_comments.movie = movie
-            movie_comments.content = comments
-            movie_comments.user = request.user
-            movie_comments.star = float(star)
-            # movie_comments.user_id = 1
-            # movie_comments.movie_id = 2
-            # movie_comments.content = 'hello'
-            # movie_comments.star = 3.0
-            movie_comments.save()
+            comment = movie_comments.hasUserComment(movie_id=movie_id, user_id=user)
+            if comment:
+                return render(request, 'review_fail.html', {'msg':json.dumps({"msg": ("您已经评论过，不能再评论")})})
+            movie_comments.addComment(movie_id=movie_id, user_id=user, content=comments, star=float(star))
+            movie_comments.free()
+            # movie = MovieInfo.objects.get(id=movie_id)
+            # movie_comments.movie = movie
+            # movie_comments.content = comments
+            # movie_comments.user = request.user
+            # movie_comments.star = float(star)
+            # # movie_comments.user_id = 1
+            # # movie_comments.movie_id = 2
+            # # movie_comments.content = 'hello'
+            # # movie_comments.star = 3.0
+            # movie_comments.save()
             #需要修改
             return render(request, 'review_ok.html',{'msg':json.dumps({"msg": ("评论成功")})})
         else:
@@ -91,8 +96,11 @@ class DeleteReview(View):
     def post(self,request):
         user = request.user
         movie_id = request.POST.get("movie_id", '0')
-        comment = Review.objects.filter(user_id = user, movie_id=movie_id)
+        movie_comments = Review()
+        comment = movie_comments.hasUserComment(movie_id=movie_id, user_id=user)
         if not comment:
             return render(request, 'review_fail.html', {'msg':json.dumps({"msg": ("您还未进行评论")})})
-        Review.objects.filter(user_id=user,movie_id=movie_id).delete()
+        movie_comments.deleteComment(movie_id=movie_id, user_id=user)
+        movie_comments.free()
+        # Review.objects.filter(user_id=user,movie_id=movie_id).delete()
         return render(request, 'review_ok.html', {'msg':json.dumps({"msg": ("删除评论成功")})})
