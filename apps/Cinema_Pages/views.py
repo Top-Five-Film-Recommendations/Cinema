@@ -256,3 +256,25 @@ def searchByType(request):
     print(len(names))
     return names, ids
 
+def ucf_recom(request):
+    user_id = request.user
+    movie_id_str = ucf(user_id)
+    movie_list = []
+    if not movie_id_str:
+        movie_id_list = movie_id_str.split(',')
+
+        for movie_id in movie_id_list:
+            tmp = MovieInfo.objects.get(id=int(movie_id))
+            movie_list.append(tmp)
+    paginator = Paginator(movie_list, 8)
+    page = request.GET.get('page')
+    commend_movie = paginator.get_page(page)
+    return render(request, 'movie_display.html', {
+        "commend_movie": commend_movie
+    })
+
+# 这是ucf 即接口函数
+def ucf(user_id):
+    return None
+
+
