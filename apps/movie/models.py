@@ -22,7 +22,7 @@ class MovieInfo(models.Model):
     leadactors = models.CharField(max_length=1000, default='', verbose_name='主演', null=True, blank=True)
     nation = models.CharField(max_length=255, default='', verbose_name='国家', null=True, blank=True)
     language = models.CharField(max_length=255, default='', verbose_name='语言', null=True, blank=True)
-    releasedate = models.CharField(max_length=1000  ,default="2015-01-15(中国大陆3D)", verbose_name='上映年份', null=True, blank=True)
+    releasedate = models.CharField(max_length=1000 ,default="2015-01-15(中国大陆3D)", verbose_name='上映年份', null=True, blank=True)
     othername = models.CharField(max_length=1000, default='', verbose_name='又名', null=True, blank=True)
     description = models.TextField(default='', verbose_name='简介', null=True, blank=True)
     durations = models.CharField(max_length=255, default='', verbose_name='片长', null=True, blank=True)
@@ -61,14 +61,12 @@ class MovieInfo(models.Model):
 # 电影相似度表
 class MovieSimilar(models.Model):
 
-    connection = None
-    def __init__(self):
-        connection = happybase.Connection(host='39.100.88.119', port=9090)
-        connection.open()
 
 
     def getSimilar(self,movie_id):
-        recommend_table = happybase.Table('movie_sim_1', self.connection)
+        c = happybase.Connection(host='39.100.88.119', port=9090)
+        c.open()
+        recommend_table = happybase.Table('movie_sim_1', c)
         tmp_dict = recommend_table.row(str(movie_id))
         movie_id_str = ''
         for key, value in tmp_dict.items():
@@ -79,6 +77,7 @@ class MovieSimilar(models.Model):
             for movie_id in movie_id_list:
                 tmp = MovieInfo.objects.get(id=int(movie_id))
                 movie_list.append(tmp)
+        c.close()
         return movie_list
     # item1 = models.IntegerField(default=0, verbose_name='电影id')
     # item2 = models.IntegerField(default=0, verbose_name='电影id')
@@ -97,10 +96,6 @@ class MovieSimilar(models.Model):
 
 
 class Review(models.Model):
-    connection = None
-    def __init__(self):
-        connection = happybase.Connection(host='39.100.88.119', port=9090)
-        connection.open()
 
 
     def revert(self, result):
@@ -148,36 +143,59 @@ class Review(models.Model):
 # 需要全部转成utf-8
 
     def getComments_movie(self,movie_id):
-        comment_table = happybase.Table('comment', self.connection)
+        c = happybase.Connection(host='39.100.88.119', port=9090)
+        c.open()
+        comment_table = happybase.Table('comment', c)
         query_str = "RowFilter (=, 'substring:_" + str(movie_id) + "')"
         query = comment_table.scan(filter=query_str, limit=1000)
-        result = list(query)
+        try:
+            result = list(query)
+        except:
+            c.close()
+            return []
         result = self.revert(result)
-        return result
+        c.close()
+        return result[0:10]
 
 
     def getUserComments_movie(self,movie_id):
-        comment_table = happybase.Table('comment_local', self.connection)
+        c = happybase.Connection(host='39.100.88.119', port=9090)
+        c.open()
+        comment_table = happybase.Table('comment_local', c)
         query_str = "RowFilter (=, 'substring:_" + str(movie_id) + "')"
         query = comment_table.scan(filter=query_str, limit=1000)
-        result = list(query)
+        try:
+            result = list(query)
+        except:
+            c.close()
+            return []
         result = self.revert(result)
+        c.close()
         return result
 
     def getUserComment_user(self, user_id):
-        comment_table = happybase.Table('comment_local', self.connection)
+        c = happybase.Connection(host='39.100.88.119', port=9090)
+        c.open()
+        comment_table = happybase.Table('comment_local', c)
         query_str = "RowFilter (=, 'substring:" + str(user_id) + "_')"
         query = comment_table.scan(filter=query_str, limit=1000)
         result = list(query)
         result = self.revert(result)
+        c.close()
         return result
 
     def hasUserComment(self, movie_id, user_id):
-        comment_table = happybase.Table('comment_local', self.connection)
+        c = happybase.Connection(host='39.100.88.119', port=9090)
+        c.open()
+        comment_table = happybase.Table('comment_local',c)
         query_str = "RowFilter (=, 'binary:" + str(user_id) + "_" + str(movie_id) + "')"
         query = comment_table.scan(filter=query_str, limit=1000)
-        result = list(query)
-        result = self.revert(result)
+        try:
+            result = list(query)
+        except:
+            c.close()
+            return False
+        c.close()
         if len(result) == 0:
             return False
         else:
@@ -185,18 +203,23 @@ class Review(models.Model):
 
 
     def addUserComment(self,movie_id, user_id, content, star, reviewtime):
-
-        comment_table = happybase.Table('comment_local', self.connection)
+        c = happybase.Connection(host='39.100.88.119', port=9090)
+        c.open()
+        comment_table = happybase.Table('comment_local', c)
         if self.hasUserComment(movie_id, user_id):
+            c.close()
             return False
         comment_table.put(str(user_id) + "_" + str(movie_id), {"region:content": str(content),
                                                      "region:star": str(star),
                                                      "region:reviewtime":str(reviewtime)})
-
+        c.close()
 
     def deleteUserComment(self, movie_id, user_id):
-        comment_table = happybase.Table('comment_local', self.connection)
+        c = happybase.Connection(host='39.100.88.119', port=9090)
+        c.open()
+        comment_table = happybase.Table('comment_local', c)
         comment_table.delete(str(user_id)+ "_" + str(movie_id))
+        c.close()
 
 
     def free(self):

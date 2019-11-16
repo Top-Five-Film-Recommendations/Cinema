@@ -29,17 +29,17 @@ class ContentView(View):
 
 
         all_comments = movie_comments.getUserComments_movie(movie_id)
-        movie_comments.free()
+
 
         # 相似电影
         movie_similar = MovieSimilar()
-        similar_movies = movie_similar.getSimilar(movie_id)
-
+        # similar_movies = movie_similar.getSimilar(movie_id)
+        similar_movies = []
 
 
 
         return render(request, 'movie_detail.html', {"movie": movieinfo,
-                                                "recommend_list": similar_movies[0: 8],
+                                                "recommend_list": similar_movies,
                                                      # 这里用recommend_list 代替了similar
                                                 "user_review": all_comments,
                                                 "douban_review" :douban_review
@@ -70,7 +70,7 @@ class AddReview(View):
                 return render(request, 'review_fail.html', {'msg':json.dumps({"msg": ("您已经评论过，不能再评论")})})
             movie_comments.addUserComment(movie_id=movie_id, user_id=user_id, content=comments, star=str(star),
                                           reviewtime=datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
-            movie_comments.free()
+
             # movie = MovieInfo.objects.get(id=movie_id)
             # movie_comments.movie = movie
             # movie_comments.content = comments
@@ -95,7 +95,6 @@ class DeleteReview(View):
         comment = movie_comments.hasUserComment(movie_id=movie_id, user_id=user_id)
         if not comment:
             return render(request, 'review_fail.html', {'msg':json.dumps({"msg": ("您还未进行评论")})})
-        movie_comments.deleteComment(movie_id=movie_id, user_id=user_id)
-        movie_comments.free()
+        movie_comments.deleteUserComment(movie_id=movie_id, user_id=user_id)
         # Review.objects.filter(user_id=user,movie_id=movie_id).delete()
         return render(request, 'review_ok.html', {'msg':json.dumps({"msg": ("删除评论成功")})})

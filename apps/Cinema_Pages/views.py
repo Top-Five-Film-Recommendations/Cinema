@@ -50,9 +50,9 @@ def calDefaultRecom(request):
     all_movieinfo_rate = MovieInfo.objects.all().order_by('-numrating')
     for movie in all_movieinfo_rate:
         if (lim_len_rate > len_index_rate):
-            if (movie.moviename not in tmp_title_list):
-                tmp_title_list.append(movie.moviename)
-                recom_tuple.append((movie.moviename, movie.averating))
+            if (movie.id not in tmp_title_list):
+                tmp_title_list.append(movie.id)
+                recom_tuple.append((movie.id, movie.averating))
                 len_index_rate += 1
             else:
                 continue
@@ -68,8 +68,8 @@ def calDefaultRecom(request):
 
     for movie in all_movieinfo:
         if (lim_len_date > len_index_date):
-            if movie.moviename not in title_list:
-                title_list.append(movie.moviename)
+            if movie.id not in title_list:
+                title_list.append(movie.id)
                 len_index_date += 1
             else:
                 continue
@@ -79,16 +79,16 @@ def calDefaultRecom(request):
     #将当前默认推荐删除
     DefaultRecom.objects.filter().delete()
 
-    for mvname in title_list:
+    for mvid in title_list:
         defaultrecom = DefaultRecom()
-        defaultrecom.movie = MovieInfo.objects.get(moviename=mvname)
+        defaultrecom.movie = MovieInfo.objects.get(id = mvid)
         defaultrecom.save()
 
     default_recommend_movies = DefaultRecom.objects.all()
     user_recommend_movies = default_recommend_movies
     movie_list = []
-    for movie in user_recommend_movies:
-        movie_list.append(movie)
+    for mv in user_recommend_movies:
+        movie_list.append(mv.movie)
     paginator = Paginator(movie_list, 8)
     page = request.GET.get('page')
     movies = paginator.get_page(page)
@@ -246,7 +246,7 @@ def searchByType(request):
     return names, ids
 
 def ucf_recom(request):
-    user_id = request.user
+    user_id = request.user.id
     movie_id_str = ucf(user_id)
     movie_list = []
     if len(movie_id_str)>0:
@@ -270,6 +270,7 @@ def ucf(user_id):
     movie_id = ''
     for key, value in tmp.items():
         movie_id = value.decode('utf-8')
+    connection.close()
     return movie_id
 
 

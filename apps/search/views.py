@@ -20,7 +20,9 @@ class MovieSearch(View):
         paginator = Paginator(movie_list, 8)
         page = request.GET.get('page')
         search_movie = paginator.get_page(page)
-        return render(request, 'es.html', {"search_movie":search_movie})
+        return render(request, 'movie_display.html', {
+            "commend_movie": search_movie
+        })
 
 
 def fulltextsearch(request):
