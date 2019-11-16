@@ -6,21 +6,22 @@ from elasticsearch import Elasticsearch
 from django.views import View
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
-class MovieSearch(View):
-    def post(self,request):
-        query = request.POST.get('q', '')
-        movie_name, movie_id = fulltextsearch(query)
+def movie_search(request):
+    query = request.POST.get('q', '')
+    movie_name, movie_id = fulltextsearch(query)
 
 
-        movie_list = []
-        for movieid in movie_id:
-            movie = MovieInfo.objects.get(id=int(movieid))
-            movie_list.append(movie)
-            #此部分功能建议上线后再调试
-        paginator = Paginator(movie_list, 8)
-        page = request.GET.get('page')
-        search_movie = paginator.get_page(page)
-        return render(request, 'es.html', {"search_movie":search_movie})
+    movie_list = []
+    for movieid in movie_id:
+        movie = MovieInfo.objects.get(id=int(movieid))
+        movie_list.append(movie)
+        #此部分功能建议上线后再调试
+    paginator = Paginator(movie_list, 8)
+    page = request.GET.get('page')
+    search_movie = paginator.get_page(page)
+    return render(request, 'es.html', {
+        "search_movie": search_movie
+    })
 
 
 def fulltextsearch(request):
