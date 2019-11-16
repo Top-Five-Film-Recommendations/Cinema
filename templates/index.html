@@ -53,7 +53,7 @@
                         <li><a href="#" class="login"  >欢迎您！{{ request.user.username}}</a></li>
                         <li><a href="{% url 'logout' %}" class="login"  >退出</a></li>
                         {% if request.user.username == 'admin' %}
-                            <li><a href="{% url 'reCal_coldstart' %}" class="login">spark重计算</a></li>
+{#                            <li><a href="{% url 'reCal_coldstart' %}" class="login">spark重计算</a></li>#}
                             <li><a href="{% url 'reCal_coldstart' %}" class="login">无用户推荐计算</a></li>
                         {% endif %}
                         </ul>

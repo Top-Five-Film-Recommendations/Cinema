@@ -56,7 +56,7 @@
                         <li><a href="#" class="login"  >欢迎您！{{ request.user.username}}</a></li>
                         <li><a href="{% url 'logout' %}" class="login"  >退出</a></li>
                         {% if request.user.username == 'admin' %}
-                            <li><a href="{% url 'reCal_coldstart' %}" class="login">spark重计算</a></li>
+{#                            <li><a href="{% url 'reCal_coldstart' %}" class="login">spark重计算</a></li>#}
                             <li><a href="{% url 'reCal_coldstart' %}" class="login">无用户推荐计算</a></li>
                         {% endif %}
                         </ul>
@@ -98,7 +98,7 @@
                             <div class="sidebar_cell_list">
                                 <a href="{% url 'movie_display' %}">热门</a>
                                 {% if request.user.is_authenticated %}
-                                    <a href="{% url 'ucf' %}">协同过滤推荐</a>
+                                    <a href="{% url 'ucf' %}">猜你喜欢</a>
                                 {% endif %}
                                 <a href="{% url 'movie_type' '剧情' %}">剧情</a>
                                 <a href="{% url 'movie_type' '动作' %}">动作</a>
