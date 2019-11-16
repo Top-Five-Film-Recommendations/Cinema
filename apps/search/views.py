@@ -11,11 +11,11 @@ def movie_search(request):
     movie_name, movie_id = fulltextsearch(query)
     print('full text search num: {}'.format(len(movie_id)))
 
-    movie_list = []
-    for movieid in movie_id:
-        movie = MovieInfo.objects.get(id=int(movieid))
-        movie_list.append(movie)
-        #此部分功能建议上线后再调试
+    movie_list = MovieInfo.objects.filter(id__in=movie_id)
+    # for movieid in movie_id:
+    #     movie = MovieInfo.objects.get(id=int(movieid))
+    #     movie_list.append(movie)
+    #     #此部分功能建议上线后再调试
     paginator = Paginator(movie_list, 8)
     page = request.GET.get('page')
     search_movie = paginator.get_page(page)
