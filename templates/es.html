@@ -73,11 +73,11 @@
                 {% endif %}
                 <div class="collapse navbar-collapse navbar-1 special-dropdown-nav">
                     <!--未修改-->
-                    <form action="{% url 'movie_search' %}" method="post" class="navbar-form pull-right"
-                          role="search">
+                    <form method="post" class="navbar-form pull-right"
+                          role="search" name="search" id="search">
                         {% csrf_token %}
                         <input type="text" name="q" class="form-control" placeholder="Search">
-                        <button type="submit" name="submit" class="btn btn-info">搜索</button>
+                        <input type="submit" name="submit" class="btn btn-info" value="搜索" onclick="return moviesearch()">
                     </form>
                 </div>
 
@@ -219,5 +219,12 @@
 <!-- Main container END -->
 
 
+<script type="text/javascript">
+
+    function moviesearch() {
+        document.getElementById("search").action="{% url 'movie_search' %}";//提交的url
+        document.getElementById("search").submit();
+    }
+</script>
 </body>
 </html>

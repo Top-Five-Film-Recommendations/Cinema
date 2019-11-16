@@ -77,11 +77,11 @@
 
                 <div class="collapse navbar-collapse navbar-1 special-dropdown-nav">
                     <!--weixiugai-->
-                    <form action="{% url 'movie_search' %}" method="post" class="navbar-form pull-right"
-                          role="search">
+                    <form method="post" class="navbar-form pull-right"
+                          role="search" name="search" id="search">
                         {% csrf_token %}
                         <input type="text" name="q" class="form-control" placeholder="Search">
-                        <button type="submit" name="submit" class="btn btn-info">搜索</button>
+                        <input type="submit" name="submit" class="btn btn-info" value="搜索" onclick="return moviesearch()">
                     </form>
                 </div>
             </nav>
@@ -328,10 +328,13 @@
         document.getElementById("form").submit();
 
     }
-
     function deleteAction(){
         document.getElementById("form").action="{% url 'deletereview' %}";//提交的url
         document.getElementById("form").submit();
+    }
+    function moviesearch() {
+        document.getElementById("search").action="{% url 'movie_search'%}";//提交的url
+        document.getElementById("search").submit();
     }
 </script>
 

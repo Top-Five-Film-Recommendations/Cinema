@@ -199,8 +199,13 @@ class Cinema_Pages_view(View):
 def reCal_spark(request):
     pass
 
+
+
 def movie_type(request, type):
     movie_name, movie_id = searchByType(type)
+    for i in range(0,len(movie_id)):
+        movie_id[i] = int(movie_id[i])
+    # print('full text search num: {}'.format(len(movie_id)))
     movie_list = MovieInfo.objects.filter(id__in=movie_id)
     # movie_list = []
     # for movieid in movie_id:
@@ -214,6 +219,8 @@ def movie_type(request, type):
     return render(request, 'movie_display.html', {
         "commend_movie": commend_movie
     })
+
+
 
 def searchByType(request):
     es = Elasticsearch({"39.98.134.232:9200"})
@@ -273,5 +280,3 @@ def ucf(user_id):
         movie_id = value.decode('utf-8')
     connection.close()
     return movie_id
-
-

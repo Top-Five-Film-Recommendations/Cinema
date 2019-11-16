@@ -6,21 +6,62 @@ from elasticsearch import Elasticsearch
 from django.views import View
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
+
+class MovieSearch(View):
+
+
+    def get(self,request):
+        page = request.GET.get('page')
+        search_movie = (pagi).get_page(page)
+        return render(request, 'movie_display.html', {
+            "commend_movie": search_movie
+        })
+
+    def post(self,request):
+        query = request.POST.get('q', '')
+        movie_name, movie_id = fulltextsearch(query)
+        print('full text search num: {}'.format(len(movie_id)))
+        for i in range(0, len(movie_id)):
+            movie_id[i] = int(movie_id[i])
+        # movie_list = MovieInfo.objects.filter(id__in=movie_id)
+        movie_list = []
+        for movieid in movie_id:
+            movie = MovieInfo.objects.get(id=int(movieid))
+            movie_list.append(movie)
+        paginator = Paginator(movie_list, 8)
+        page = request.GET.get('page')
+        search_movie = paginator.get_page(page)
+        global pagi
+        pagi = paginator
+        return render(request, 'movie_display.html', {
+            "commend_movie": search_movie
+        })
+
+
 def movie_search(request):
-    query = request.POST.get('q', '')
+    query = request.GET.get('q', '')
     movie_name, movie_id = fulltextsearch(query)
     print('full text search num: {}'.format(len(movie_id)))
-
-    movie_list = MovieInfo.objects.filter(id__in=movie_id)
-    # for movieid in movie_id:
-    #     movie = MovieInfo.objects.get(id=int(movieid))
-    #     movie_list.append(movie)
+    for i in range(0,len(movie_id)):
+        movie_id[i] = int(movie_id[i])
+    # movie_list = MovieInfo.objects.filter(id__in=movie_id)
+    movie_list = []
+    for movieid in movie_id:
+        movie = MovieInfo.objects.get(id=int(movieid))
+        movie_list.append(movie)
     #     #此部分功能建议上线后再调试
     paginator = Paginator(movie_list, 8)
-    page = request.GET.get('page')
-    search_movie = paginator.get_page(page)
-    return render(request, 'es.html', {
-        "search_movie": search_movie
+    page = request.GET.get('page',default='1')
+    # search_movie = paginator.page(page)
+    # 根据页码从分页器中取出对应页的数据
+    try:
+        search_movie = paginator.page(page)
+    except PageNotAnInteger as e:
+        # 不是整数返回第一页数据
+        search_movie = paginator.page('1')
+        page = 1
+    return render(request, 'movie_display.html', {
+        "commend_movie": search_movie
     })
 
 
