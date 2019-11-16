@@ -9,7 +9,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 def movie_search(request):
     query = request.POST.get('q', '')
     movie_name, movie_id = fulltextsearch(query)
-
+    print('full text search num: {}'.format(len(movie_id)))
 
     movie_list = []
     for movieid in movie_id:

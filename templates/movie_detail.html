@@ -97,7 +97,14 @@
                 <div class="row voffset">
                     <!--left-->
                     <div class="col-sm-3 col-xs-6">
-                        <img src="{{movie.backpost}}" alt="图片找不到了" class="movie_detail_page" height="190px"/>
+                        {% comment %} <img src="{{movie.backpost}}" alt="图片找不到了" class="movie_detail_page" height="190px"/> {% endcomment %}
+                         <img src="{% if 34  %}../../../static/poster/{{movie.id}}.jpg{% endif %}" onerror="replacePoster(this);" alt="{{movie.picture}}" class="img-responsive lazyload movie_detail_page"  height="190px"/>
+                        <script language="JavaScript">
+                            function replacePoster(obj){
+                                obj.src = obj.alt;
+                                obj.onerror = null;
+                            }
+                        </script>
 
                     </div>
                     <!--end left-->
@@ -278,7 +285,14 @@
                 {% for rec in recommend_list %}
                 <div class="col-sm-10 col-xs-1" style="margin-top:35px">
                     <a href="{% url 'movieinfo' rec.id %}" data-gallery-id="gallery-1">
-                        <img src="{{rec.picture}}" alt="图片无法显示" class="img-responsive lazyload movie-img"/>
+                        {% comment %} <img src="{{rec.picture}}" alt="图片无法显示" class="img-responsive lazyload movie-img"/> {% endcomment %}
+                        <img src="{% if 34  %}../../../static/poster/{{rec.id}}.jpg{% endif %}" onerror="replacePoster(this);" alt="{{rec.picture}}" class="img-responsive lazyload movie-img"/>
+                        <script language="JavaScript">
+                            function replacePoster(obj){
+                                obj.src = obj.alt;
+                                obj.onerror = null;
+                            }
+                        </script>
                         <p class="text-center">
                         <span style="color:#444">
                             {%if rec.moviename|length >= 8 %}

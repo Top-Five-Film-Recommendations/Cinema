@@ -32,7 +32,7 @@ class Migration(migrations.Migration):
                 ('typelist', models.CharField(blank=True, default='', max_length=255, null=True, verbose_name='类型')),
                 ('averating', models.FloatField(blank=True, default=0, null=True, validators=[django.core.validators.MaxValueValidator(5), django.core.validators.MinValueValidator(0)], verbose_name='评分(0-5)')),
                 ('picture', models.CharField(blank=True, default='/static/img/m16.jpg', max_length=1000, null=True, verbose_name='缩略图')),
-                ('backpost', models.CharField(blank=True, default='/static/img/m16.jpg', max_length=3000, null=True, verbose_name='详情页海报')),
+                # ('backpost', models.CharField(blank=True, default='/static/img/m16.jpg', max_length=3000, null=True, verbose_name='详情页海报')),
             ],
             options={
                 'verbose_name': '电影信息',

@@ -138,8 +138,15 @@
                         {% for movie in commend_movie %}
                         <div class="col-sm-3 col-xs-4 text-center">
                             <a href="{% url 'movieinfo' movie.id%}" data-gallery-id="gallery-1">
-                                <img src="{% if 34  %}{{movie.picture}}{% endif %}" alt="图片无法显示"
-                                     class="img-responsive lazyload movie-img"/>
+                                {% comment %} <img src="{% if 34  %}{{movie.picture}}{% endif %}" alt="图片无法显示"
+                                     class="img-responsive lazyload movie-img"/> {% endcomment %}
+                                <img src="{% if 34  %}../../../static/poster/{{movie.id}}.jpg{% endif %}" onerror="replacePoster(this);" alt="{{movie.picture}}" class="img-responsive lazyload movie-img"/>
+                                <script language="JavaScript">
+                                    function replacePoster(obj){
+                                        obj.src = obj.alt;
+                                        obj.onerror = null;
+                                    }
+                                </script>
                                 <p class="text-center" style="margin-top:6px">
                                 <span style="color:#444">
                                     {%if movie.moviename|length >= 8 %}

@@ -46,8 +46,8 @@ class MovieInfo(models.Model):
 
     picture = models.CharField(max_length=1000, verbose_name='缩略图', null=True, blank=True,
                                default='/static/img/m16.jpg')
-    backpost = models.CharField(max_length=3000, verbose_name='详情页海报', null=True, blank=True,
-                                default='/static/img/m16.jpg')
+    # backpost = models.CharField(max_length=3000, verbose_name='详情页海报', null=True, blank=True,
+                                # default='/static/img/m16.jpg')
 
     def __str__(self):
         return '%s - %s - %s - %s - %lf - %s' % (

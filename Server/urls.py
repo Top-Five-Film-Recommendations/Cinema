@@ -34,7 +34,6 @@ from search.views import movie_search
 
 
 urlpatterns = [
-    # path('xadmin/', xadmin.site.urls),
     path('xadmin/', xadmin.site.urls),
     # 首页
     re_path(r'^$|^index$',index, name='index'),
@@ -51,21 +50,3 @@ urlpatterns = [
     path('delete_comment/', DeleteReview.as_view(), name='deletereview'),
     re_path(r'^movie/ucf',ucf_recom , name='ucf')
 ]
-#
-#     #weisg
-#     path('index.html/~', refresh, name='refresh'),
-#     #path('content.html/~', refresh2, name='refresh2')
-#     #path('index.html/~', calDefault8Recommendations, name = 'refresh')
-#     # xgm
-#     path('base.html/~', reCal_spark, name='reCal_spark'),
-#     path('index.html/~', reCal_normal, name='reCal_normal'),
-#
-# ]
-#
-#     re_path(r'^$|^index$', views.index, name='index'),
-#     re_path(r'^movie_display/', Cinema_Pages_view.as_view(), name='movie_display'),
-#     re_path(r'^movie/id/(?P<movie_id>[0-9]{6,})/add_review/', views.add_review, name='add_review'),
-#     re_path(r'^movie/id/(?P<id>[0-9]{6,})/', views.movie_detail, name='movie_detail'),
-    # re_path(r'^movie/genre/(?P<genre>[\w]+)/', views.movie_search_by_genre, name='movie_genre'),
-    # re_path(r'^movie/year/(?P<year>[0-9]{2,4})/', views.movie_search_by_year, name='movie_year'),
-    # re_path(r'^movie/search/', views.movie_search_form, name='movie_search_form'),
