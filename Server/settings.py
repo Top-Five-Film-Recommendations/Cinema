@@ -96,10 +96,10 @@ WSGI_APPLICATION = 'Server.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'douban',# 后续需要改
-        'USER': 'root',  #数据库登录用户名
+        'NAME': 'cinema',# 后续需要改
+        'USER': 'liuchenxu',  #数据库登录用户名
         'PASSWORD': 'Cloud302@',  #数据库登录密码
-        'HOST': 'localhost',  #数据库所在主机
+        'HOST': '47.92.101.31',  #数据库所在主机
         'PORT': '3306',  #数据库端口p
     }
 }

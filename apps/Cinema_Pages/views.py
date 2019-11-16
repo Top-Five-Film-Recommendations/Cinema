@@ -10,7 +10,7 @@ from django.views import View
 import random
 # new
 from movie.models import Review, MovieInfo,MovieSimilar
-from Cinema_Pages.models import DefaultRecom, StaRecom
+from Cinema_Pages.models import DefaultRecom
 from user.models import UserProfile
 from django.db.models import Q
 from elasticsearch import Elasticsearch

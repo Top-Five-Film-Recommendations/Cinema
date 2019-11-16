@@ -1,6 +1,5 @@
 import xadmin
-from Cinema_Pages.models import DefaultRecom,StaRecom
-
+from Cinema_Pages.models import DefaultRecom
 #
 # class ReviewAdmin(object):
 #     list_display = ['id', 'user', 'movie', 'content', 'star', 'reviewtime']
@@ -16,12 +15,12 @@ class DefaultRecomAdmin(object):
     list_filter = ['id', 'movie', 'redate']
     ordering = ['id', 'movie', 'redate']
 
-
-class StaRecomAdmin(object):
-    list_display = ['id', 'user', 'movie']
-    search_fields = ['id', 'userid', 'movie']
-    list_filter = ['id', 'user', 'movie']
-    ordering = ['id', 'user', 'movie']
+#
+# class StaRecomAdmin(object):
+#     list_display = ['id', 'user', 'movie']
+#     search_fields = ['id', 'userid', 'movie']
+#     list_filter = ['id', 'user', 'movie']
+#     ordering = ['id', 'user', 'movie']
 
 
 # xadmin.site.unregister(UserProfile)
@@ -29,7 +28,7 @@ class StaRecomAdmin(object):
 
 # xadmin.site.register(Review, ReviewAdmin)
 xadmin.site.register(DefaultRecom, DefaultRecomAdmin)
-xadmin.site.register(StaRecom, StaRecomAdmin)
+# xadmin.site.register(StaRecom, StaRecomAdmin)
 
 
 

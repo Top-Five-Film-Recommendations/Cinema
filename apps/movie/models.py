@@ -22,7 +22,7 @@ class MovieInfo(models.Model):
     leadactors = models.CharField(max_length=1000, default='', verbose_name='主演', null=True, blank=True)
     nation = models.CharField(max_length=255, default='', verbose_name='国家', null=True, blank=True)
     language = models.CharField(max_length=255, default='', verbose_name='语言', null=True, blank=True)
-    releasedate = models.DateField(default=datetime.datetime.now, verbose_name='上映年份', null=True, blank=True)
+    releasedate = models.CharField(max_length=1000  ,default="2015-01-15(中国大陆3D)", verbose_name='上映年份', null=True, blank=True)
     othername = models.CharField(max_length=1000, default='', verbose_name='又名', null=True, blank=True)
     description = models.TextField(default='', verbose_name='简介', null=True, blank=True)
     durations = models.CharField(max_length=255, default='', verbose_name='片长', null=True, blank=True)
