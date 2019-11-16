@@ -240,9 +240,9 @@ def searchByType(request):
     for hit in resultback:
         names.append(hit['_source']['name'])
         ids.append(hit["_id"])
-    print(names)
-    print(ids)
-    print(len(names))
+    # print(names)
+    # print(ids)
+    print('search result num: {}'.format(len(names)))
     return names, ids
 
 def ucf_recom(request):
