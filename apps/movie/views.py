@@ -33,8 +33,8 @@ class ContentView(View):
 
         # 相似电影
         movie_similar = MovieSimilar()
-        # similar_movies = movie_similar.getSimilar(movie_id)
-        similar_movies = []
+        similar_movies = movie_similar.getSimilar(movie_id)
+
 
 
 

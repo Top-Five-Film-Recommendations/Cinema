@@ -201,10 +201,11 @@ def reCal_spark(request):
 
 def movie_type(request, type):
     movie_name, movie_id = searchByType(type)
-    movie_list = []
-    for movieid in movie_id:
-        movie = MovieInfo.objects.get(id=int(movieid))
-        movie_list.append(movie)
+    movie_list = MovieInfo.objects.filter(id__in=movie_id)
+    # movie_list = []
+    # for movieid in movie_id:
+    #     movie = MovieInfo.objects.get(id=int(movieid))
+    #     movie_list.append(movie)
         # 此部分功能建议上线后再调试，因为主键不能修改
     paginator = Paginator(movie_list, 8)
     page = request.GET.get('page')
