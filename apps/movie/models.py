@@ -44,7 +44,6 @@ class MovieInfo(models.Model):
     # else:
     #     rating = "rating" + str(averating) + str(0)
 
-    # 和刘德xin对接一下，picture部分要用什么Field
     picture = models.CharField(max_length=1000, verbose_name='缩略图', null=True, blank=True,
                                default='/static/img/m16.jpg')
     backpost = models.CharField(max_length=3000, verbose_name='详情页海报', null=True, blank=True,
