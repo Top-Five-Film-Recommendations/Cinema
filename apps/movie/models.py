@@ -113,6 +113,24 @@ class Review(models.Model):
             return li
         else:
             return None
+    def revert_user(self, result):
+        li = []
+        if(len(result)>0):
+            for i in range(0,len(result)):
+                key = result[i][0]
+                dic = result[i][1]
+                key = key.decode('utf-8')
+                Dic = {}
+                for rowkey, value in dic.items():
+
+                    tmp = (rowkey.decode('utf-8').split(':'))[1]
+                    Dic[tmp] = value.decode('utf-8')
+                Dic['user'] = UserProfile.objects.get(id = key.split('_')[0]).username
+                tup = (key, Dic)
+                li.append(tup)
+            return li
+        else:
+            return None
     # STAR_RANGE = [
     #     MaxValueValidator(5),
     #     MinValueValidator(0)
@@ -168,7 +186,7 @@ class Review(models.Model):
         except:
             c.close()
             return []
-        result = self.revert(result)
+        result = self.revert_user(result)
         c.close()
         return result
 
@@ -179,7 +197,7 @@ class Review(models.Model):
         query_str = "RowFilter (=, 'substring:" + str(user_id) + "_')"
         query = comment_table.scan(filter=query_str, limit=1000)
         result = list(query)
-        result = self.revert(result)
+        result = self.revert_user(result)
         c.close()
         return result
 

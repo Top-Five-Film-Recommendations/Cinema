@@ -31,6 +31,7 @@ class ContentView(View):
         all_comments = movie_comments.getUserComments_movie(movie_id)
 
 
+
         # 相似电影
         movie_similar = MovieSimilar()
         similar_movies = movie_similar.getSimilar(movie_id)
