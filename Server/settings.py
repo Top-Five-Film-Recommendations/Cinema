@@ -14,7 +14,7 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 
 import os,sys
 
-
+mysql_ip = '47.92.101.31'
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -99,7 +99,7 @@ DATABASES = {
         'NAME': 'cinema',# 后续需要改
         'USER': 'liuchenxu',  #数据库登录用户名
         'PASSWORD': 'Cloud302@',  #数据库登录密码
-        'HOST': '47.92.101.31',  #数据库所在主机
+        'HOST': mysql_ip,  #数据库所在主机
         'PORT': '3306',  #数据库端口p
     }
 }
