@@ -7,6 +7,9 @@ from django.db import models
 
 from user.models import UserProfile
 
+es_ip_port = 
+hbase_ip = '39.100.88.119'
+
 # 电影详情表
 class MovieInfo(models.Model):
 
@@ -63,7 +66,7 @@ class MovieSimilar(models.Model):
 
 
     def getSimilar(self,movie_id):
-        c = happybase.Connection(host='39.100.88.119', port=9090)
+        c = happybase.Connection(host=hbase_ip, port=9090)
         c.open()
         recommend_table = happybase.Table('movie_sim_1', c)
         tmp_dict = recommend_table.row(str(movie_id))
@@ -160,7 +163,7 @@ class Review(models.Model):
 # 需要全部转成utf-8
 
     def getComments_movie(self,movie_id):
-        c = happybase.Connection(host='39.100.88.119', port=9090)
+        c = happybase.Connection(host=hbase_ip, port=9090)
         c.open()
         comment_table = happybase.Table('comment', c)
         query_str = "RowFilter (=, 'substring:_" + str(movie_id) + "')"
@@ -176,7 +179,7 @@ class Review(models.Model):
 
 
     def getUserComments_movie(self,movie_id):
-        c = happybase.Connection(host='39.100.88.119', port=9090)
+        c = happybase.Connection(host=hbase_ip, port=9090)
         c.open()
         comment_table = happybase.Table('comment_local', c)
         query_str = "RowFilter (=, 'substring:_" + str(movie_id) + "')"
@@ -191,7 +194,7 @@ class Review(models.Model):
         return result
 
     def getUserComment_user(self, user_id):
-        c = happybase.Connection(host='39.100.88.119', port=9090)
+        c = happybase.Connection(host=hbase_ip, port=9090)
         c.open()
         comment_table = happybase.Table('comment_local', c)
         query_str = "RowFilter (=, 'substring:" + str(user_id) + "_')"
@@ -202,7 +205,7 @@ class Review(models.Model):
         return result
 
     def hasUserComment(self, movie_id, user_id):
-        c = happybase.Connection(host='39.100.88.119', port=9090)
+        c = happybase.Connection(host=hbase_ip, port=9090)
         c.open()
         comment_table = happybase.Table('comment_local',c)
         query_str = "RowFilter (=, 'binary:" + str(user_id) + "_" + str(movie_id) + "')"
@@ -220,7 +223,7 @@ class Review(models.Model):
 
 
     def addUserComment(self,movie_id, user_id, content, star, reviewtime):
-        c = happybase.Connection(host='39.100.88.119', port=9090)
+        c = happybase.Connection(host=hbase_ip, port=9090)
         c.open()
         comment_table = happybase.Table('comment_local', c)
         if self.hasUserComment(movie_id, user_id):
@@ -232,7 +235,7 @@ class Review(models.Model):
         c.close()
 
     def deleteUserComment(self, movie_id, user_id):
-        c = happybase.Connection(host='39.100.88.119', port=9090)
+        c = happybase.Connection(host=hbase_ip, port=9090)
         c.open()
         comment_table = happybase.Table('comment_local', c)
         comment_table.delete(str(user_id)+ "_" + str(movie_id))
