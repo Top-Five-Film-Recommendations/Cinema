@@ -22,6 +22,8 @@ import happybase
 # from .forms import ReviewForm
 import MySQLdb
 
+elasticsearch_IP_PORT = "39.98.134.232:9200"
+HBASE_IP = '39.100.88.119'
 # 首页
 def index(request):
     return render(request, 'index.html')
@@ -223,7 +225,7 @@ def movie_type(request, type):
 
 
 def searchByType(request):
-    es = Elasticsearch({"39.98.134.232:9200"})
+    es = Elasticsearch({HBASE_IP})
     ret = es.search(index="movieinfo"
                     , body={
             "_source": ["name"],
@@ -271,7 +273,7 @@ def ucf_recom(request):
 
 # 这是ucf 即接口函数
 def ucf(user_id):
-    connection = happybase.Connection(host='39.100.88.119', port=9090)
+    connection = happybase.Connection(host=HBASE_IP, port=9090)
     connection.open()
     recommend_table = happybase.Table('recommend', connection)
     tmp = recommend_table.row(str(user_id))
