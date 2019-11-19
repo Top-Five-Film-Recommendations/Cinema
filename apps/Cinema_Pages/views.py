@@ -225,7 +225,7 @@ def movie_type(request, type):
 
 
 def searchByType(request):
-    es = Elasticsearch({HBASE_IP})
+    es = Elasticsearch({elasticsearch_IP_PORT})
     ret = es.search(index="movieinfo"
                     , body={
             "_source": ["name"],
