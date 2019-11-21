@@ -6,11 +6,10 @@ from elasticsearch import Elasticsearch
 from django.views import View
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
-es_addr = "39.98.134.232:9200"
+es_host_port="39.98.134.232:9200"
+
 
 class MovieSearch(View):
-
-
     def get(self,request):
         page = request.GET.get('page')
         search_movie = (pagi).get_page(page)
@@ -67,7 +66,7 @@ def movie_search(request):
 
 
 def fulltextsearch(request):
-    es = Elasticsearch({es_addr})
+    es = Elasticsearch({es_host_port})
     ret = es.search(index="movieinfo"
                     ,body= {
             "_source": ["name"],

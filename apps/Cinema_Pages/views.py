@@ -17,9 +17,10 @@ from elasticsearch import Elasticsearch
 import happybase
 import MySQLdb
 
-es_addr = "39.98.134.232:9200"
+es_host_port = "39.98.134.232:9200"
 hbase_host = '39.100.88.119'
 hbase_port = 9090
+
 
 # 首页
 def index(request):
@@ -222,7 +223,7 @@ def movie_type(request, type):
 
 
 def searchByType(request):
-    es = Elasticsearch({es_addr})
+    es = Elasticsearch({es_host_port})
     ret = es.search(index="movieinfo"
                     , body={
             "_source": ["name"],

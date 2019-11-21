@@ -7,6 +7,7 @@ from django.db import models
 
 from user.models import UserProfile
 
+es_ip_port = "39.98.134.232:9200"
 hbase_host = '39.100.88.119'
 hbase_port = 9090
 
