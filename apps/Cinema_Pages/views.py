@@ -15,12 +15,11 @@ from user.models import UserProfile
 from django.db.models import Q
 from elasticsearch import Elasticsearch
 import happybase
-
-# old
-# from .func import fuzzy_finder
-# from .func import GetOtherInfo
-# from .forms import ReviewForm
 import MySQLdb
+
+es_addr = "39.98.134.232:9200"
+hbase_host = '39.100.88.119'
+hbase_port = 9090
 
 # 首页
 def index(request):
@@ -223,7 +222,7 @@ def movie_type(request, type):
 
 
 def searchByType(request):
-    es = Elasticsearch({"39.98.134.232:9200"})
+    es = Elasticsearch({es_addr})
     ret = es.search(index="movieinfo"
                     , body={
             "_source": ["name"],
@@ -271,7 +270,7 @@ def ucf_recom(request):
 
 # 这是ucf 即接口函数
 def ucf(user_id):
-    connection = happybase.Connection(host='39.100.88.119', port=9090)
+    connection = happybase.Connection(host=hbase_host, port=hbase_port)
     connection.open()
     recommend_table = happybase.Table('recommend', connection)
     tmp = recommend_table.row(str(user_id))
